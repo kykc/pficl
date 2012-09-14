@@ -2,7 +2,9 @@
 
 	require_once('include.php');
 
-	echo \pficl\Core\Fp::id(5);
+	$id = \pficl\Core\Fp::id();
 	
+	echo $id('ZHOPA');
 	
+	echo \pficl\Core\Col::getFirst(array(3, 2, 1));
 ?>
