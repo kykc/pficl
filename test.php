@@ -7,4 +7,6 @@
 	echo $id('ZHOPA');
 	
 	echo \pficl\Core\Col::getFirst(array(3, 2, 1));
+    
+    die();
 ?>
