@@ -4,18 +4,11 @@ namespace pficl\Core
 {
 	abstract class Autoload
 	{
-		protected static $instance;
-		
 		final public static function getInstance()
 		{
 			$className = get_called_class();
 			
-			if ($className::$instance == NULL)
-			{
-				$className::$instance = new $className;
-			}
-			
-			return $className::$instance;
+			return new $className;
 		}
 		
 		final private function __construct()
