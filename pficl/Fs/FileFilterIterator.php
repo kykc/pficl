@@ -2,6 +2,9 @@
 
 namespace pficl\Fs
 {
+	use \FilterIterator as FilterIterator;
+	use \Iterator as Iterator;
+	
 	class FileFilterIterator extends FilterIterator
 	{
 		protected $customFilter = NULL;

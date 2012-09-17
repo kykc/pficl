@@ -16,6 +16,8 @@ namespace pficlTests\Collection
     	protected function getFieldTest()
     	{
     		$this->assertEquals(ColUtil::getField(array('a' => 'a'), 'a'), 'a');
+    		$this->assertEquals(ColUtil::getField(array('a' => 'a'), 'b'), NULL);
+    		$this->assertEquals(ColUtil::getField(array('a' => 'a'), 'b', 'b'), 'b');
     	}
 	}
 }

@@ -4,27 +4,25 @@
 	
 	date_default_timezone_set('Europe/Riga');
     
-    class Test extends \pficl\Test\SimpleTest
+    $testsLocation = pficl\Core\Util::getTestsLocation();
+    
+    foreach (pficl\Fs\Util::getFileList($testsLocation) as $testFile)
     {
-    	public function getTestList()
-    	{
-    		return array(
-    			'test1' => array(),
-    			'test2' => array(),
-    			);
-    	}
-    	
-    	protected function test1()
-    	{
-    		$this->assertEquals(1,1);
-    		$this->assertEquals(1,2);
-    	}
-    	
-    	protected function test2()
-    	{
-    		$this->assertEquals(1+2, 2+1);
-    	}
+    	require_once($testFile);
     }
     
-    print_r(Test::make()->run()->makeCliTrace());
+    $classList = get_declared_classes();
+    
+    $filter = function($a)
+    {
+    	return pficl\Core\Util::isInNamespace($a, 'pficlTests');
+    };
+    
+    $testList = \pficl\Fp\Util::filter($filter, $classList);
+    
+    foreach ($testList as $test)
+    {
+    	echo $test::make()->run()->makeCliTrace();
+    }
+    
 ?>
