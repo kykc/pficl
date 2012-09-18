@@ -17,6 +17,7 @@ namespace pficl\Fs
 			$filtered = new FileFilterIterator($iterator, $filter);
 
 			$list = array_map(function(SplFileInfo $f) {return $f->getPathName();}, iterator_to_array($filtered, FALSE));
+			sort($list, SORT_STRING);
 			
 			return $list;
 		}

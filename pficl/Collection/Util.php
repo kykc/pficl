@@ -21,6 +21,33 @@ namespace pficl\Collection
 			return $result;
 		}
 
+		final static public function arraySliceAssoc($array, $from, $to)
+		{
+			$result = array();
+
+			$open = FALSE;
+
+			foreach ($array as $key => $value)
+			{
+				if ($key === $to)
+				{
+					$open = FALSE;
+				}
+
+				if ($open)
+				{
+					$result[$key] = $value;
+				}
+
+				if ($key === $from)
+				{
+					$open = TRUE;
+				}
+			}
+
+			return $result;
+		}
+
 		final static public function arrayTranspose(array $array)
 		{
 			array_unshift($array, NULL);
