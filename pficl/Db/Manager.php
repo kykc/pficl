@@ -40,6 +40,7 @@ namespace pficl\Db
 			{
 				$this->pdo = new PDO('mysql:host='.$this->getCredentials()->getHost().';dbname='.$this->getCredentials()->getDatabase(), $this->getCredentials()->getUser(), $this->getCredentials()->getPasswd());
 				$this->pdo->exec('SET NAMES utf8');
+				$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 			}
 
 			return $this->pdo;
