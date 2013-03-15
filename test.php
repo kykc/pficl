@@ -3,7 +3,7 @@
 	require_once('include.php');
 	
 	date_default_timezone_set('Europe/Riga');
-    
+	
 	$testsLocation = pficl\Core\Util::getTestsLocation();
     
 	foreach (pficl\Fs\Util::getFileList($testsLocation) as $testFile)

@@ -21,6 +21,12 @@ namespace pficl\Fs
 			
 			return $list;
 		}
+
+		// CRUDE !!11
+		final public static function isAbsolute($path)
+		{
+			return is_string($path) && strlen($path) > 0 && substr($path, 0, 1) === '/';
+		}
 	}
 }
 
