@@ -18,6 +18,11 @@ namespace pficl\Web
 		{
 			return preg_match('/^192\.168\./', $ip) ? TRUE : FALSE;
 		}
+
+		public static function isHomeIp($ip)
+		{
+			return gethostbyname('ya.tomatl.org') == $ip;
+		}
 	}
 }
 
