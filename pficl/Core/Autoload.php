@@ -33,17 +33,16 @@ namespace pficl\Core
 
 			if (file_exists($file) && is_readable($file))
 			{
-				$utilFile = dirname($file).'/'.'Util.php';
-				$exceptionFile = dirname($file).'/'.'Exception.php';
-
-				if (file_exists($utilFile) && is_readable($utilFile))
+				$stdFileList = array('Util.php', 'Exception.php', 'Interface.php');
+				
+				foreach ($stdFileList as $fileName)
 				{
-					require_once($utilFile);
-				}
-
-				if (file_exists($exceptionFile) && is_readable($exceptionFile))
-				{
-					require_once($exceptionFile);
+					$fullName = dirname($file).'/'.$fileName;
+					
+					if (file_exists($fullName) && is_readable($fullName))
+					{
+						require_once($fullName);
+					}
 				}
 
 				require_once($file);

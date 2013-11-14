@@ -2,6 +2,8 @@
 
 namespace pficl\Collection
 {
+	use \pficl\Fp\Util as Fp;
+
 	final class Util
 	{
 		final static public function arrayUnique(array $array)
