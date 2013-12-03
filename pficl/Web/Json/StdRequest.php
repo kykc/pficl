@@ -45,19 +45,16 @@ namespace pficl\Web\Json
 					if ($data->has('data'))
 					{
 						$this->data = $data->sub('data');
+						
 						$this->raw = $data;
 						$this->method = $data->def(\pficl\Collection\DefaultValue::make())->sub('method')->val();
-					}
-					else
-					{
-						throw new StdRequestInvalidFormatException($val);
+
+						return;
 					}
 				}
 			}
-			else
-			{
-				throw new StdRequestParseFailedException($val);
-			}
+
+			throw new StdRequestParseFailedException($val);
 		}
 
 		/** @return \pficl\Collection\SafeAccess */
@@ -81,6 +78,11 @@ namespace pficl\Web\Json
 		public function response($data)
 		{
 			return json_encode($data);
+		}
+
+		public static function mkGetString(array $rq, $field = 'stdRequest')
+		{
+			return 'stdRequest='.urlencode(json_encode(array('data' => $rq)));
 		}
 	}
 }

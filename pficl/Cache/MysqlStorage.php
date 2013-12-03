@@ -2,11 +2,35 @@
 
 namespace pficl\Cache
 {
-	abstract class MysqlStorage implements IStorage
+	class MysqlStorage implements IStorage
 	{
+		private $manager;
+		private $tableName;
+
 		/** @return \pficl\Db\Manager */
-		abstract public function getDbManager();
-		abstract public function getTableName();
+		public function getDbManager()
+		{
+			return $this->manager;
+		}
+
+		public function getTableName()
+		{
+			return $this->tableName;
+		}
+
+		public static function make(\pficl\Db\Manager $db, $tableName)
+		{
+			$obj = new static;
+			$obj->manager = $db;
+			$obj->tableName = $tableName;
+
+			return $obj;
+		}
+
+		protected function __construct()
+		{
+
+		}
 
 		/** @return \pficl\Cache\Encoding\IProcessor */
 		protected function makeKeyProc()

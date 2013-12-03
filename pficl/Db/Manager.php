@@ -2,27 +2,20 @@
 
 namespace pficl\Db
 {
-	abstract class Manager
+	final class Manager
 	{
 		private $pdo = NULL;
-		private static $instance = NULL;
 		private $cred;
 
 		/** @return \pficl\Db\Manager */
-		public static function inst()
+		public static function make(\pficl\Db\DefaultCredentials $cred)
 		{
-			if (self::$instance === NULL)
-			{
-				$calledClass = get_called_class();
-				self::$instance = new $calledClass;
-			}
-
-			return self::$instance;
+			return new self($cred);
 		}
 
-		private function __construct()
+		private function __construct($cred)
 		{
-			$this->cred = $this->makeCredentials();
+			$this->cred = $cred;
 		}
 
 		/** @return \pficl\Db\DefaultCredentials */
@@ -30,8 +23,6 @@ namespace pficl\Db
 		{
 			return $this->cred;
 		}
-
-		abstract protected function makeCredentials();
 
 		/** @return \pficl\Db\PDO */
 		public function pdo()

@@ -4,6 +4,7 @@ namespace pficl\Fs
 {
 	use \FilterIterator as FilterIterator;
 	use \Iterator as Iterator;
+	use \Closure as Closure;
 	
 	class FileFilterIterator extends FilterIterator
 	{
@@ -23,7 +24,7 @@ namespace pficl\Fs
 			}
 		}
 
-		public function __construct(Iterator $i, $customFilter)
+		public function __construct(Iterator $i, Closure $customFilter)
 		{
 			parent::__construct($i);
 			$this->customFilter = $customFilter;

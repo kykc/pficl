@@ -2,8 +2,10 @@
 
 namespace pficl\Db
 {
-	abstract class DefaultCredentials
+	class DefaultCredentials
 	{
+		private $db;
+
 		public function getUser()
 		{
 			return ini_get('mysql.default_user');
@@ -14,7 +16,10 @@ namespace pficl\Db
 			return ini_get('mysql.default_password');
 		}
 
-		abstract public function getDatabase();
+		public function getDatabase()
+		{
+			return $this->db;
+		}
 
 		public function getHost()
 		{
@@ -25,11 +30,13 @@ namespace pficl\Db
 		{
 		}
 
-		final public static function make()
+		/** @return \pficl\Db\DefaultCredentials */
+		final public static function make($db = NULL)
 		{
-			$calledClass = get_called_class();
+			$obj = new static;
+			$obj->db = $db;
 
-			return new $calledClass;
+			return $obj;
 		}
 	}
 }

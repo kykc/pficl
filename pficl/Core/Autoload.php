@@ -4,11 +4,16 @@ namespace pficl\Core
 {
 	abstract class Autoload
 	{
+		/** @return \pficl\Core\Autoload */
 		final public static function getInstance()
 		{
-			$className = get_called_class();
-			
-			return new $className;
+			return new static;
+		}
+
+		/** @return \pficl\Core\Autoload */
+		final public static function inst()
+		{
+			return static::getInstance();
 		}
 		
 		final private function __construct()
@@ -53,6 +58,12 @@ namespace pficl\Core
 			{
 				return FALSE;
 			}
+		}
+
+		/** @return \pficl\Db\Manager */
+		public function defaultDb()
+		{
+			return \pficl\Db\Manager::make(\pficl\Db\DefaultCredentials::make(static::DB_NAME));
 		}
 		
 		abstract public function getPath();

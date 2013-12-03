@@ -54,8 +54,23 @@ namespace pficl\Web\StaticContent
 			return Autoload::PROJECT_ROOT_PATH.'/'.$this->getStorage();
 		}
 
+		final public function includeAll($recursive = FALSE)
+		{
+			$filter = function($name) { return !in_array($name, array('.', '..')); };
+
+			if (!$recursive)
+			{
+				return $this->includeSimpleList(Fp::filter($filter, scandir($this->getStorageLocation())));
+			}
+			else
+			{
+				return $this->includeSimpleList(\pficl\Fs\Util::getFileList($this->getStorageLocation()));
+			}
+		}
+
 		final public function includeSimpleList(array $list)
 		{
+
 			$storageLocation = $this->getStorageLocation();
 
 			$map = function($a) use ($storageLocation)
@@ -65,10 +80,14 @@ namespace pficl\Web\StaticContent
 				{
 					return $storageLocation.'/'.$a;
 				}
+				else
+				{
+					return $a;
+				}
 			};
 
 			$list = Fp::map($map, $list);
-
+			
 			foreach ($list as $key => $fileName)
 			{
 				if (is_readable($fileName))

@@ -59,6 +59,49 @@ namespace pficl\Web\Route
 		{
 			return $this->route;
 		}
+
+		public static function ifClassHandler($str)
+		{
+			return strpos($str, 'class/') === 0 ? str_replace('class/', '', $str) : FALSE;
+		}
+
+		public static function ifLambdaHandler($str)
+		{
+			return strpos($str, 'lambda/') === 0 ? str_replace('lambda/', '', $str) : FALSE;
+		}
+
+		public static function chooseHandler(Route $route, array $routingTable)
+		{
+			$filter = function($subj) use ($route)
+			{
+				$type = array_shift($subj);
+
+				if ($type === 'equals')
+				{
+					return $route->isEqualRoute(Route::makeByPath(array_shift($subj)));
+				}
+				elseif ($type === 'starts')
+				{
+					return $route->startsWith(Route::makeByPath(array_shift($subj)));
+				}
+				elseif ($type === 'default')
+				{
+					return TRUE;
+				}
+				else
+				{
+					return FALSE;
+				}
+			};
+
+			$info = array_values(\pficl\Fp\Util::filter($filter, $routingTable));
+
+			$action = array_shift($info);
+
+			$handlerName = array_pop($action);
+
+			return $handlerName;
+		}
 	}
 }
 
