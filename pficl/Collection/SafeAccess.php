@@ -25,6 +25,12 @@ namespace pficl\Collection
 			return SafeAccess::make($this->subj, $default);
 		}
 
+		/** @return \Library\DataStructure\SafeAccess */
+		public function nodef()
+		{
+			return SafeAccess::make($this->subj);
+		}
+
 		/** @return \pficl\Collection\SafeAccess */
 		public function sub($key)
 		{
@@ -40,6 +46,12 @@ namespace pficl\Collection
 			{
 				return SafeAccess::make($this->default->getValue(), $this->default);
 			}
+		}
+
+		// TODO: support nested calls
+		public function fetch($str)
+		{
+			return $this->sub($str)->val();
 		}
 
 		public function val()

@@ -13,9 +13,18 @@ namespace pficl\Web\Route
 		private $route;
 
 		/** @return \pficl\Web\Route\Route */
-		final public function getRoute()
+		final public function getRemainderRoute()
 		{
 			return $this->route;
+		}
+
+		/** @return \pficl\Web\Route\Route */
+		final public function getMatchedRoute()
+		{
+			$remainder = $this->getRemainderRoute()->getComponentList();
+			$full = \Autoload::inst()->webState()->route()->getComponentList();
+
+			return Route::make(\pficl\Collection\Util::rtrim($full, $remainder));
 		}
 
 		/** @return \pficl\Web\Route\Handler */
@@ -65,7 +74,7 @@ namespace pficl\Web\Route
 
 		protected function handleInvalidRoute()
 		{
-			throw new HandlerInvalidRouteException($this->getRoute()->toJson());
+			throw new HandlerInvalidRouteException($this->getRemainderRoute()->toJson());
 		}
 	}
 }

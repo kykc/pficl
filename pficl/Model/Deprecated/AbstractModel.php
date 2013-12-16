@@ -141,7 +141,7 @@ namespace pficl\Model\Deprecated
 
 		final public static function fetchIdListStatic($id, $model, $type = NULL, $includeDisposed = FALSE)
 		{
-			$typePart = $type === NULL ? '1' : 'ownerType = \''.mysql_real_escape_string($type).'\'';
+			$typePart = $type === NULL ? '1' : 'ownerType = '.$model->db()->quote($type);
 			$dispPart = !$model->isDisposable() || $includeDisposed ? '1' : 'NOT isDeleted';
 
 			$sql = 'SELECT id FROM '.$model->getStorageName().' WHERE ownerId > 0 AND ownerId = '.intval($id).' AND '.$typePart.' AND '.$dispPart;
@@ -154,6 +154,20 @@ namespace pficl\Model\Deprecated
 			return function() use($id, $model, $type, $includeDisposed)
 			{
 				return AbstractModel::fetchIdListStatic($id, $model, $type, $includeDisposed);
+			};
+		}
+
+		final protected function idLstNonStd($id, $model, $fieldName, $includeDisposed = FALSE)
+		{
+			$self = $this;
+
+			return function() use ($self, $model, $fieldName, $id, $includeDisposed)
+			{
+				$dispPart = !$model->isDisposable() || $includeDisposed ? '1' : 'NOT isDeleted';
+
+				$sql = 'SELECT id FROM `'.$model->getStorageName().'` WHERE `'.$fieldName.'` = '.intval($id).' AND '.$dispPart;
+
+				return $self->db()->queryFetchAllAssoc($sql);
 			};
 		}
 
@@ -481,14 +495,16 @@ namespace pficl\Model\Deprecated
 
 		final protected function getFetchIdListCallback($id, $tableName, $disposable = FALSE, $ownerType = NULL)
 		{
-			return function() use ($id, $tableName, $disposable, $ownerType)
+			$self = $this;
+
+			return function() use ($id, $tableName, $disposable, $ownerType, $self)
 			{
-				$typePart = $ownerType === NULL ? '1' : 'ownerType = \''.mysql_real_escape_string($ownerType).'\'';
+				$typePart = $ownerType === NULL ? '1' : 'ownerType = '.$self->db()->quote($ownerType);
 				$dispPart = !$disposable ? '1' : 'NOT '.$disposable;
 
-				$sql = 'SELECT id FROM '.$tableName.' WHERE ownerId = '.intval($id).' AND '.$typePart.' AND '.$dispPart;
+				$sql = 'SELECT id FROM `'.$tableName.'` WHERE ownerId = '.intval($id).' AND '.$typePart.' AND '.$dispPart;
 
-				return Fp::map(Fp::makeFetchElementLambda('id'), $this->db()->queryFetchAllAssoc($sql));
+				return Fp::map(Fp::makeFetchElementLambda('id'), $self->db()->queryFetchAllAssoc($sql));
 			};
 		}
 

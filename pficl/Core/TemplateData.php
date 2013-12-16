@@ -24,6 +24,7 @@ namespace pficl\Core
 			return $this->template;
 		}
 
+		/** @return \pficl\Collection\SafeAccess */
 		public function data()
 		{
 			return $this->data;

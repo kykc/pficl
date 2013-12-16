@@ -118,6 +118,11 @@ namespace pficl\Fp
 				return $c2($c1($a));
 			};
 		}
+
+		final public static function enableShortcuts()
+		{
+			require_once(PFICL_PATH.'/func/fp.php');
+		}
 	}
 
 	class Func

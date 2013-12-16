@@ -33,13 +33,11 @@ namespace pficl\Web\Route
 			return count($arr) === 0 || Fp::all('is_string', $arr);
 		}
 
-		/** @return \pficl\Web\Route\Route */
-		public static function makeCurrent($routerLocation = 'master.php')
-		{
-			$scriptLocation = $_SERVER['SCRIPT_FILENAME'];
-			$documentRoot = $_SERVER['DOCUMENT_ROOT'];
 
-			$relativeRouterLocation = str_replace($routerLocation, '', str_replace($documentRoot, '', $scriptLocation));
+		/** @return \pficl\Web\Route\Route */
+		public static function makeCurrent()
+		{
+			$relativeRouterLocation = \Autoload::inst()->webRoot();
 
 			$fullPath = array_key_exists('REDIRECT_URL', $_SERVER) ? $_SERVER['REDIRECT_URL'] : $_SERVER['SCRIPT_NAME'];
 			$relativePath = str_replace($relativeRouterLocation, '', $fullPath);
@@ -70,7 +68,7 @@ namespace pficl\Web\Route
 		/** @return \pficl\Web\Route\Route */
 		public static function makeByPath($str)
 		{
-			return new self(explode('/', trim($str, '/')));
+			return new self(array_filter(explode('/', trim($str, '/'))));
 		}
 
 		public function getComponentList()
@@ -81,6 +79,11 @@ namespace pficl\Web\Route
 		public function toJson()
 		{
 			return json_encode($this->path);
+		}
+
+		public function toString()
+		{
+			return implode('/', $this->path);
 		}
 
 		public function getComponentCount()

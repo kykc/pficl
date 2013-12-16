@@ -259,6 +259,49 @@ namespace pficl\Collection
 			return count(array_diff($arr1, $arr2)) === 0 && count(array_diff($arr2, $arr1)) === 0;
 		}
 
+		/**
+		 * Removes sublist from the left (beginning) of the subject list if subject list begins with subtrahend list elements
+		 * @param array $subject subject list
+		 * @param array $subtrahend list of elements to remove
+		 * @return array
+		 */
+		final public static function ltrim(array $subject, array $subtrahend)
+		{
+			if (count($subject) >= count($subtrahend))
+			{
+				$sub = array_slice($subject, 0, count($subtrahend));
+
+				$offset = $sub === $subtrahend ? count($subtrahend) : 0;
+
+				return array_slice($subject, $offset);
+			}
+			else
+			{
+				return $subject;
+			}
+		}
+
+		final public static function rtrim(array $subject, array $subtrahend)
+		{
+			if (count($subject) >= count($subtrahend))
+			{
+				$sub = array_slice($subject, -count($subtrahend));
+
+				$length = $sub === $subtrahend ? count($subject) - count($subtrahend) : count($subject);
+
+				return array_slice($subject, 0, $length);
+			}
+			else
+			{
+				return $subject;
+			}
+		}
+
+		final public static function enableShortcuts()
+		{
+			require_once(PFICL_PATH.'/func/collection.php');
+		}
+
 		final private function __construct()
 		{
 		}

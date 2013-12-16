@@ -49,6 +49,8 @@ namespace pficl\Core
 		public function process(array $data = array())
 		{
 			$data = TemplateData::make($this, $data);
+			$_t = $data->tpl();
+			$_d = $data->data();
 
 			ob_start();
 

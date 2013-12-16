@@ -16,21 +16,27 @@ namespace pficl\Web\StaticContent
 		const ST_CSS = 'css';
 
 		private $storage;
+		private $contentType = NULL;
 
 		/** @return \pficl\Web\StaticContent\IncludeManager */
-		public static function make($storage)
+		public static function make($storage, $contentType = NULL)
 		{
-			return new self($storage);
+			return new self($storage, $contentType);
 		}
 
-		private function __construct($storage)
+		private function __construct($storage, $contentType)
 		{
 			$this->storage = $storage;
+			$this->contentType = $contentType;
 		}
 
 		public function getContentType()
 		{
-			if ($this->getStorage() == self::ST_JS)
+			if ($this->contentType)
+			{
+				return $this->contentType;
+			}
+			elseif ($this->getStorage() == self::ST_JS)
 			{
 				return 'text/javascript';
 			}
@@ -51,20 +57,20 @@ namespace pficl\Web\StaticContent
 
 		public function getStorageLocation()
 		{
-			return Autoload::PROJECT_ROOT_PATH.'/'.$this->getStorage();
+			return Fs::isAbsolute($this->getStorage()) ? $this->getStorage() : Autoload::PROJECT_ROOT_PATH.'/'.$this->getStorage();
 		}
 
-		final public function includeAll($recursive = FALSE)
+		final public function includeAll($recursive = FALSE, $part = '')
 		{
 			$filter = function($name) { return !in_array($name, array('.', '..')); };
 
 			if (!$recursive)
 			{
-				return $this->includeSimpleList(Fp::filter($filter, scandir($this->getStorageLocation())));
+				return $this->includeSimpleList(Fp::filter($filter, scandir($this->getStorageLocation().DIRECTORY_SEPARATOR.$part)));
 			}
 			else
 			{
-				return $this->includeSimpleList(\pficl\Fs\Util::getFileList($this->getStorageLocation()));
+				return $this->includeSimpleList(\pficl\Fs\Util::getFileList($this->getStorageLocation().DIRECTORY_SEPARATOR.$part));
 			}
 		}
 

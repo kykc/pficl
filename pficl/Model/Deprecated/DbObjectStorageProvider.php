@@ -39,7 +39,7 @@ namespace pficl\Model\Deprecated
 				$sql =
 						'	SELECT * '.
 						'		FROM '.$this->getSubject()->getStorageName().' '.
-						'		WHERE id = \''.mysql_real_escape_string($this->getSubject()->getPrimaryId()).'\' '.
+						'		WHERE id = '.$this->getSubject()->db()->quote($this->getSubject()->getPrimaryId()).' '.
 						'	; ';
 
 				$statement = $this->getSubject()->db()->query($sql);
@@ -84,7 +84,7 @@ namespace pficl\Model\Deprecated
 					$partCollection[] = $this->makeUpdatePart($fieldName, $fieldValue['now']);
 				}
 
-				$sql .= implode(', ', $partCollection).' WHERE id = \''.mysql_real_escape_string($this->getSubject()->getPrimaryId()).'\'';
+				$sql .= implode(', ', $partCollection).' WHERE id = '.$this->getSubject()->db()->quote($this->getSubject()->getPrimaryId());
 
 				if (count($diff))
 				{
@@ -128,7 +128,7 @@ namespace pficl\Model\Deprecated
 			}
 			elseif (is_string($fieldValue))
 			{
-				return '\''.mysql_real_escape_string($fieldValue).'\'';
+				return $this->getSubject()->db()->quote($fieldValue);
 			}
 			elseif (is_bool($fieldValue))
 			{

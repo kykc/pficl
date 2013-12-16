@@ -17,7 +17,7 @@ namespace pficl\Model\Deprecated
 			$sql = 'SELECT id FROM '.$model->getStorageName().' '.
 					'WHERE 1 '.
 						'AND ownerId = '.intval($owner->getOwnerId()).' AND ownerId <> 0 '.
-						'AND ownerType = \''.  mysql_real_escape_string($owner->getOwnerType()).'\' ';
+						'AND ownerType = '.$model->db()->quote($owner->getOwnerType()).' ';
 
 			if ($model->getIsDisposable())
 			{

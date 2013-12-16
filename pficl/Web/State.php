@@ -91,11 +91,6 @@ namespace pficl\Web
 
 			return $this;
 		}
-
-		public function root()
-		{
-			return trim(dirname($_SERVER['SCRIPT_NAME']), '/');
-		}
 	}
 }
 

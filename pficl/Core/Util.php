@@ -30,6 +30,11 @@ namespace pficl\Core
 				return strpos($fullName, $namespace) === 0; //&& strpos('\\', str_replace($namespace, '', $fullName)) === 0;
 			}
 		}
+
+		final public static function enableShortcuts()
+		{
+			require_once(PFICL_PATH.'/func/core.php');
+		}
 	}
 }
 

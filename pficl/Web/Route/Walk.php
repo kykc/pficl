@@ -70,7 +70,26 @@ namespace pficl\Web\Route
 			return strpos($str, 'lambda/') === 0 ? str_replace('lambda/', '', $str) : FALSE;
 		}
 
-		public static function chooseHandler(Route $route, array $routingTable)
+		public static function handleRoute(Route $route, array $routingTable, array $handlers)
+		{
+			$handledRoute = NULL;
+			$handlerName = Walk::chooseHandler($route, $routingTable, $handledRoute);
+
+			$remainder = $handledRoute ? $route->subtract($handledRoute) : $route;
+
+			if (Walk::ifClassHandler($handlerName))
+			{
+				$className = \Autoload::inst()->getWebHandlerNamespace().Walk::ifClassHandler($handlerName);
+
+				$className::make($remainder)->process();
+			}
+			elseif (Walk::ifLambdaHandler($handlerName))
+			{
+				$handlers[Walk::ifLambdaHandler($handlerName)]($remainder);
+			}
+		}
+
+		private static function chooseHandler(Route $route, array $routingTable, &$handledRoute)
 		{
 			$filter = function($subj) use ($route)
 			{
@@ -99,6 +118,11 @@ namespace pficl\Web\Route
 			$action = array_shift($info);
 
 			$handlerName = array_pop($action);
+
+			if (count($action) === 2)
+			{
+				$handledRoute = Route::makeByPath(array_pop($action));
+			}
 
 			return $handlerName;
 		}
