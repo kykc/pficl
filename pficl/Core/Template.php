@@ -58,6 +58,19 @@ namespace pficl\Core
 
 			return ob_get_clean();
 		}
+
+		public static function processContent($content, array $data = array())
+		{
+			$data = NULL;
+			$_t = NULL;
+			$_d = \pficl\Collection\SafeAccess::make($data);
+
+			ob_start();
+
+			eval('?>'.$content);
+
+			return ob_get_clean();
+		}
 	}
 }
 

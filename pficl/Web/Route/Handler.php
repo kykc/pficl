@@ -18,8 +18,13 @@ namespace pficl\Web\Route
 			return $this->route;
 		}
 
+		public function getPageName()
+		{
+			return 'Unknown';
+		}
+
 		/** @return \pficl\Web\Route\Route */
-		final public function getMatchedRoute()
+		public function getMatchedRoute()
 		{
 			$remainder = $this->getRemainderRoute()->getComponentList();
 			$full = \Autoload::inst()->webState()->route()->getComponentList();

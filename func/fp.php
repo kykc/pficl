@@ -6,7 +6,7 @@
 
 		if (count($args) > 1)
 		{
-			$args[0] = _l($args[0]);
+			$args[0] = is_callable($args[0]) ? $args[0] : _l($args[0]);
 		}
 
 		return call_user_func_array(array('\pficl\Fp\Util', 'map'), $args);
@@ -47,7 +47,9 @@
 		$last = 'return '.$last.';';
 		$exprList[] = $last;
 
-		eval('$lambda = function('.$args.') {'.implode(';', $exprList).'};');
+		$ls = '$lambda = function('.$args.') {'.implode(';', $exprList).'};';
+
+		eval($ls);
 
 		return $lambda;
 	}
@@ -75,5 +77,10 @@
 	function _merge()
 	{
 		return call_user_func_array('array_merge', func_get_args());
+	}
+
+	function _mdict(array $list, $key, $value)
+	{
+		return _kzip(_map("\$a => \$a['$key']", $list), _map("\$a => \$a['$value']", $list));
 	}
 ?>

@@ -36,7 +36,7 @@ namespace pficl\Cache
 			return $this->key;
 		}
 
-		public function getCachedOrRecalc($callable)
+		public function getCachedOrRecalc(\Closure $callable)
 		{
 			$data = $this->getStorage()->load($this->getKey());
 
@@ -58,7 +58,7 @@ namespace pficl\Cache
 			}
 		}
 
-		public function update($callable)
+		public function update(\Closure $callable)
 		{
 			$data = $callable();
 

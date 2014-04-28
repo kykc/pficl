@@ -29,8 +29,13 @@ namespace pficl\Db
 		{
 			if ($this->pdo === NULL)
 			{
-				$this->pdo = new PDO('mysql:host='.$this->getCredentials()->getHost().';dbname='.$this->getCredentials()->getDatabase(), $this->getCredentials()->getUser(), $this->getCredentials()->getPasswd());
-				$this->pdo->exec('SET NAMES utf8');
+				$this->pdo = new PDO(
+						'mysql:charset=utf8;host='.$this->getCredentials()->getHost().';dbname='.$this->getCredentials()->getDatabase(),
+						$this->getCredentials()->getUser(),
+						$this->getCredentials()->getPasswd(),
+						array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+				
+				//$this->pdo->exec('SET NAMES utf8');
 				$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 			}
 

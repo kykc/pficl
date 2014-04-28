@@ -8,6 +8,7 @@ namespace pficl\Cache
 		public function load($key);
 		public function save($key, $data, $periodStart, $periodLength);
 		public function update($key, $data);
+		public function calculateOrUseCache($key, \Closure $dataProvider, $periodLength);
 	}
 
 	interface IStorageSubject

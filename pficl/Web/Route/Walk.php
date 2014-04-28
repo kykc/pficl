@@ -62,12 +62,29 @@ namespace pficl\Web\Route
 
 		public static function ifClassHandler($str)
 		{
-			return strpos($str, 'class/') === 0 ? str_replace('class/', '', $str) : FALSE;
+			return strpos($str, 'class/') === 0 ? str_replace('/', '\\', str_replace('class/', '', $str)) : FALSE;
 		}
 
 		public static function ifLambdaHandler($str)
 		{
 			return strpos($str, 'lambda/') === 0 ? str_replace('lambda/', '', $str) : FALSE;
+		}
+
+		public static function captionRoute(Route $route, array $routingTable)
+		{
+			$handledRoute = NULL;
+			$handlerName = Walk::chooseHandler($route, $routingTable, $handledRoute);
+
+			$remainder = $handledRoute ? $route->subtract($handledRoute) : $route;
+
+			if (Walk::ifClassHandler($handlerName))
+			{
+				$className = \Autoload::inst()->getWebHandlerNamespace().Walk::ifClassHandler($handlerName);
+
+				return $className::make($remainder)->getPageName();
+			}
+
+			return '';
 		}
 
 		public static function handleRoute(Route $route, array $routingTable, array $handlers)
@@ -89,7 +106,7 @@ namespace pficl\Web\Route
 			}
 		}
 
-		private static function chooseHandler(Route $route, array $routingTable, &$handledRoute)
+		public static function chooseHandler(Route $route, array $routingTable, &$handledRoute)
 		{
 			$filter = function($subj) use ($route)
 			{
@@ -116,6 +133,11 @@ namespace pficl\Web\Route
 			$info = array_values(\pficl\Fp\Util::filter($filter, $routingTable));
 
 			$action = array_shift($info);
+
+			if (count($action) === 4)
+			{
+				array_pop($action);
+			}
 
 			$handlerName = array_pop($action);
 

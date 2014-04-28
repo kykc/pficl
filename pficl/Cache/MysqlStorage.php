@@ -45,14 +45,29 @@ namespace pficl\Cache
 		}
 
 		/** @return \pficl\Cache\IStorageSubject */
+		final public function calculateOrUseCache($key, \Closure $dataProvider, $periodLength)
+		{
+			$result = $this->load($key, NULL);
+			$periodStart = date('Y-m-d H:i:s');
+
+			if ($result->getData() === NULL)
+			{
+				$result = $this->save($key, $dataProvider(), $periodStart, $periodLength);
+			}
+
+			return $result;
+		}
+
+		/** @return \pficl\Cache\IStorageSubject */
 		final public function load($key, $defData = NULL)
 		{
 			$keyProc = $this->makeKeyProc()->loadDecoded($key)->encode();
 			$key = $keyProc->getData();
+			$now = date('Y-m-d H:i:s');
 
-			$statement = $this->getDbManager()->pdo()->prepare('SELECT * FROM `'.$this->getTableName().'` WHERE `key` = :key');
+			$statement = $this->getDbManager()->pdo()->prepare('SELECT * FROM `'.$this->getTableName().'` WHERE `key` = :key AND DATE_ADD(periodStart, INTERVAL periodLength SECOND) >= :now');
 
-			$statement->execute(compact('key'));
+			$statement->execute(compact('key', 'now'));
 
 			$rowList = $statement->fetchAll();
 
@@ -65,7 +80,7 @@ namespace pficl\Cache
 				$dataProc = $this->makeDataProc()->loadEncoded($row['data'], $row['decodeData'])->decode();
 				$data = $dataProc->getData();
 
-				return GenericSubject::make($data, $row['periodStart'], $row['periodLength'], date('Y-m-d H:i:s'));
+				return GenericSubject::make($data, $row['periodStart'], $row['periodLength'], $now);
 			}
 			else
 			{
@@ -77,11 +92,13 @@ namespace pficl\Cache
 		{
 			$keyProc = $this->makeKeyProc()->loadDecoded($key)->encode();
 			$dataProc = $this->makeDataProc()->loadDecoded($data)->encode();
+			$rawData = $data;
 
 			$key = $keyProc->getData();
 			$data = $dataProc->getData();
 			$decodeKey = $keyProc->getMethod();
 			$decodeData = $dataProc->getMethod();
+			$now = date('Y-m-d H:i:s');
 
 			$insertData = compact('key', 'data', 'periodStart', 'periodLength', 'decodeKey', 'decodeData');
 			$updateData = $insertData;
@@ -97,6 +114,8 @@ namespace pficl\Cache
 			$statement->execute();
 
 			$statement->closeCursor();
+
+			return GenericSubject::make($rawData, $periodStart, $periodLength, $now);
 		}
 
 		final public function update($key, $data)

@@ -74,6 +74,11 @@ namespace pficl\Db
 			return implode(',', array_map(function($val) use($obj) {return $obj->quote($val);}, $values));
 		}
 
+		public function mkInsertUpdate($tableName, array $insert, array $update)
+		{
+			return 'INSERT INTO `'.$tableName.'` ('.$this->insNm($insert).') VALUES('.$this->insVal($insert).') ON DUPLICATE KEY UPDATE '.$this->updLst($update);
+		}
+
 		public function updPart($fieldName, $fieldValue)
 		{
 			// MYSQL ONLY
